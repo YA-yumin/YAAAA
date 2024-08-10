@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>타이핑 속도 테스트 게임</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        p {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        #timer {
+            font-size: 24px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>타이핑 속도 테스트</h1>
+        <p>아래 문장을 타이핑하세요:</p>
+        <p id="text-to-type"></p>
+        <textarea id="user-input" placeholder="여기에 타이핑하세요..." disabled></textarea>
+        <button id="start-button" onclick="startTest()">테스트 시작</button>
+        <button onclick="checkText()">제출</button>
+        <p id="result"></p>
+        <p id="timer">타이머: 0초</p>
+    </div>
+
+    <script>
+        const lyrics = [
+            "사랑에 빠진 사람은 그저 있는 그대로 볼 수가 없어",
+            "그러니까 제발 내게도",
+            "너를 맘껏 편 들어줄 자유가 있어",
+            "네가 바라보는 네 모습은",
+            "내가 바라보는 모습과는 다르겠지 그래",
+            "힘든 고백을 하자면",
+            "나도야 너보다 더 너에게 잘 보이고 싶어",
+            "가족과 남, 친구 사이, 너와 나",
+            "이름 모를 네가 있어",
+            "상관없어 초록 꽃 한 송이를 사",
+            "사랑한다는 말의 뜻을 알아가자",
+            "모른다 해도 괜찮아",
+            "사랑해",
+            "말도 많고 탈도 많고 겁도 많고 욕심도 많고",
+            "문제라면 문제, 문제없다면 없는데",
+            "힘든 고백을 하자면",
+            "나도야 너보다 더 너에게 잘 보이고 싶어",
+            "가족과 남, 친구 사이, 너와 나",
+            "이름 모를 네가 있어",
+            "상관없어 초록 꽃 한 송이를 사",
+            "사랑한다는 말의 뜻을 알아가자",
+            "모른다 해도 괜찮아",
+            "너에게 지금 갈게",
+            "두 손에는 라임과 샴페인",
+            "넌 웃어버릴지도 몰라",
+            "떨리네, 일방적인 고백이니 모른다 해도 괜찮아",
+            "가족과 남, 친구 사이, 너와 나",
+            "이름 모를 네가 있어",
+            "상관없어 초록 꽃 한 송이를 사",
+            "사랑한다는 말의 뜻을 알아가자",
+            "모른다 해도 괜찮아",
+            "너에게 지금 갈게",
+            "두 손에는 라임과 샴페인",
+            "나 멋진 말은 할 줄 몰라",
+            "떨리네, 일방적인 고백이니 모른다 해도 괜찮아",
+            "사랑해 "
+        ];
+
+        let startTime;
+        let timerInterval;
+
+        function getRandomLyric() {
+            const randomIndex = Math.floor(Math.random() * lyrics.length);
+            return lyrics[randomIndex];
+        }
+
+        function startTest() {
+            document.getElementById('result').textContent = '';
+            document.getElementById('user-input').value = '';
+            document.getElementById('user-input').disabled = false;
+            startTime = new Date();
+
+            // Pick a random lyric and display it
+            document.getElementById('text-to-type').textContent = getRandomLyric();
+
+            let timerSeconds = 0;
+            timerInterval = setInterval(() => {
+                timerSeconds++;
+                document.getElementById('timer').textContent = `타이머: ${timerSeconds}초`;
+            }, 1000);
+        }
+
+        function checkText() {
+            clearInterval(timerInterval);
+            const textToType = document.getElementById('text-to-type').textContent;
+            const userInput = document.getElementById('user-input').value;
+            const endTime = new Date();
+            const timeTaken = Math.floor((endTime - startTime) / 1000);
+
+            document.getElementById('user-input').disabled = true;
+
+            if (userInput.trim() === textToType) {
+                document.getElementById('result').textContent = `정확하게 입력했습니다! 소요 시간: ${timeTaken}초`;
+            } else {
+                document.getElementById('result').textContent = `입력한 내용이 일치하지 않습니다. 다시 시도해 보세요.`;
+            }
+        }
+
+        function handleKeyDown(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent default newline behavior
+                if (document.getElementById('user-input').disabled) {
+                    startTest(); // Call startTest() function if textarea is disabled
+                } else {
+                    checkText(); // Call checkText() function if textarea is enabled
+                }
+            }
+        }
+
+        // Add event listener to the whole document to handle Enter key
+        document.addEventListener('keydown', handleKeyDown);
+    </script>
+</body>
+</html>
